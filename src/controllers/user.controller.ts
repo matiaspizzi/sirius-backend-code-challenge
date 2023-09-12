@@ -1,0 +1,82 @@
+import { prisma } from '../index';
+
+const saveUser = async (username: string, password: string, role: string) => {
+    try {
+        const user = await prisma.user.create({
+            data: {
+                username,
+                password,
+                role,
+            },
+        });
+        return user;
+    } catch (err) {
+        console.error(err);
+        return
+    }
+};
+
+const getUserById = async (id: number) => {
+    try {
+        const user = await prisma.user.findUnique({ where: { id } });
+        return user;
+    } catch (err) {
+        console.error(err);
+        return
+    }
+};
+
+const getUserByUsername = async (username: string) => {
+    try {
+        const user = await prisma.user.findUnique({ where: { username } });
+        return user;
+    } catch (err) {
+        console.error(err);
+        return
+    }
+};
+
+const getUsersStats = async () => {
+    try {
+        const users = await prisma.user.findMany({
+            where: {
+                quota: { gt: 0 },
+                lastQuotaCheck: { equals: new Date().toLocaleDateString() },
+            },
+            select: {
+                id: true,
+                username: true,
+                quota: true,
+                lastQuotaCheck: true,
+            },
+        });
+        return users;
+    } catch (err) {
+        console.error(err);
+        return
+    }
+};
+
+const updateUserQuota = async (id: number, newQuota: number) => {
+    try {
+        const user = await prisma.user.update({
+            where: { id },
+            data: {
+                lastQuotaCheck: new Date().toLocaleDateString(),
+                quota: newQuota,
+            },
+        });
+        return user;
+    } catch (err) {
+        console.error(err);
+        return
+    }
+};
+
+export {
+    saveUser,
+    getUserById,
+    getUserByUsername,
+    getUsersStats,
+    updateUserQuota,
+};
