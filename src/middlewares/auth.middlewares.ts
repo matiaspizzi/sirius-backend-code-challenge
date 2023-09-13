@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { getUserById } from '../controllers/user.controller';
+import { getUserById } from '../repositories/user.repositories';
 
 const userAuth = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers['auth_token'] as string;

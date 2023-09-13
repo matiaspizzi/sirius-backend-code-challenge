@@ -1,5 +1,5 @@
 import { prisma } from '../index';
-import { updateUserQuota } from './user.controller';
+import { updateUserQuota } from './user.repositories';
 
 interface User {
     id: number;
