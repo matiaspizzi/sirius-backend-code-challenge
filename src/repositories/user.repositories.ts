@@ -1,6 +1,11 @@
 import { prisma } from '../index';
+import { User, UserStats } from '../types';
 
-const saveUser = async (username: string, password: string, role: string) => {
+const saveUser = async (
+    username: string,
+    password: string,
+    role: string
+): Promise<User | undefined> => {
     try {
         const user = await prisma.user.create({
             data: {
@@ -12,31 +17,31 @@ const saveUser = async (username: string, password: string, role: string) => {
         return user;
     } catch (err) {
         console.error(err);
-        return
+        return;
     }
 };
 
-const getUserById = async (id: number) => {
+const getUserById = async (id: number): Promise<User | null | undefined> => {
     try {
         const user = await prisma.user.findUnique({ where: { id } });
         return user;
     } catch (err) {
         console.error(err);
-        return
+        return;
     }
 };
 
-const getUserByUsername = async (username: string) => {
+const getUserByUsername = async (username: string): Promise<User | null | undefined> => {
     try {
         const user = await prisma.user.findUnique({ where: { username } });
         return user;
     } catch (err) {
         console.error(err);
-        return
+        return;
     }
 };
 
-const getUsersStats = async () => {
+const getUsersStats = async (): Promise<UserStats[] | undefined> => {
     try {
         const users = await prisma.user.findMany({
             where: {
@@ -53,11 +58,14 @@ const getUsersStats = async () => {
         return users;
     } catch (err) {
         console.error(err);
-        return
+        return;
     }
 };
 
-const updateUserQuota = async (id: number, newQuota: number) => {
+const updateUserQuota = async (
+    id: number,
+    newQuota: number
+): Promise<User | null | undefined> => {
     try {
         const user = await prisma.user.update({
             where: { id },
@@ -69,14 +77,8 @@ const updateUserQuota = async (id: number, newQuota: number) => {
         return user;
     } catch (err) {
         console.error(err);
-        return
+        return;
     }
 };
 
-export {
-    saveUser,
-    getUserById,
-    getUserByUsername,
-    getUsersStats,
-    updateUserQuota,
-};
+export { saveUser, getUserById, getUserByUsername, getUsersStats, updateUserQuota };

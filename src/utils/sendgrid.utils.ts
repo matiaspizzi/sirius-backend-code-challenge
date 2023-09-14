@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 sgMail.setApiKey(process.env['SENDGRID_API_KEY'] as string);
 
-const sendSendgrid = async (to: string, subject: string, body: string) => {
+const sendSendgrid = async (to: string, subject: string, body: string): Promise<boolean> => {
     try {
         const msg = {
             to,

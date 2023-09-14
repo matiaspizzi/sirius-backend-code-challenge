@@ -9,8 +9,7 @@ import { PrismaClient } from '@prisma/client';
 dotenv.config();
 const app = express();
 let db_url = process.env['DATABASE_URL'] as string;
-if (process.env['NODE_ENV'] === 'test')
-    db_url = process.env['DATABASE_URL_TEST'] as string;
+if (process.env['NODE_ENV'] === 'test') db_url = process.env['DATABASE_URL_TEST'] as string;
 const prisma = new PrismaClient({ datasources: { db: { url: db_url } } });
 
 app.use(express.json());

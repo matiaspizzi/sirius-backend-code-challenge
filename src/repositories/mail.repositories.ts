@@ -1,18 +1,13 @@
 import { prisma } from '../index';
 import { updateUserQuota } from './user.repositories';
+import { User, Mail } from '../types';
 
-interface User {
-    id: number;
-    role: string;
-    username: string;
-    password: string;
-    createdAt: Date;
-    updatedAt: Date;
-    quota: number;
-    lastQuotaCheck: string | null;
-}
-
-const newMail = async (user: User, to: string, subject: string, body: string) => {
+const newMail = async (
+    user: User,
+    to: string,
+    subject: string,
+    body: string
+): Promise<Mail | undefined> => {
     try {
         const mail = await prisma.mail.create({
             data: {
@@ -22,18 +17,12 @@ const newMail = async (user: User, to: string, subject: string, body: string) =>
                 author: { connect: { id: user.id } },
             },
         });
-        try{
-            await updateUserQuota(user.id, user.quota + 1);
-            return mail;
-        } catch(err){
-            console.error(err)
-            return
-        }
+        await updateUserQuota(user.id, user.quota + 1);
+        return mail;
     } catch (err) {
-        console.error(err)
+        console.error(err);
         return;
     }
-}
-
+};
 
 export { newMail };

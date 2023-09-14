@@ -10,7 +10,7 @@ mailer.fromEmail = 'matias.nahuel.pii2@gmail.com';
 mailer.fromTitle = 'Sirius Challenge';
 mailer.init();
 
-const sendMailgun = async (to: string, subject: string, body: string) => {
+const sendMailgun = async (to: string, subject: string, body: string): Promise<boolean> => {
     try {
         await mailer.send(to, subject, body);
         return true;
