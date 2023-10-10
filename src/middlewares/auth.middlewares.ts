@@ -12,6 +12,7 @@ const userAuth = async (req: Request, res: Response, next: NextFunction): Promis
             return res
                 .status(404)
                 .json({ error: 'Error de autenticación. Usuario no encontrado' });
+        res.locals['user'] = user;
         return next();
     } catch (err) {
         return res.status(401).json({ error: err });
@@ -33,6 +34,7 @@ const adminAuth = async (req: Request, res: Response, next: NextFunction): Promi
                 error: 'Error de autenticación. Usuario no es administrador',
             });
         }
+        res.locals['user'] = user;
         return next();
     } catch (err) {
         return res.status(401).json({ error: err });

@@ -26,4 +26,8 @@ interface Mail {
     updatedAt: Date;
 }
 
+interface MailProvider {
+
+}
+
 export { User, UserStats, Mail }
