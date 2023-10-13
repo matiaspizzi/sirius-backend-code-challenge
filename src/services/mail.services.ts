@@ -1,6 +1,17 @@
+import dotenv from 'dotenv';
+import { NodeMailgun } from 'ts-mailgun';
 import { Mail } from '../types';
-import sendMailgun from '../utils/mailgun.utils';
-import sendSendgrid from '../utils/sendgrid.utils';
+import sgMail from '@sendgrid/mail';
+
+dotenv.config();
+sgMail.setApiKey(process.env['SENDGRID_API_KEY'] as string);
+
+const mg = new NodeMailgun();
+mg.apiKey = process.env['MAILGUN_API_KEY'] as string;
+mg.domain = process.env['MAILGUN_DOMAIN'] as string;
+mg.fromEmail = process.env['EMAIL_FROM'] as string;
+mg.fromTitle = 'Sirius Challenge';
+mg.init();
 
 interface MailSender {
     sendMail(mail: Mail): Promise<boolean>;
@@ -8,13 +19,30 @@ interface MailSender {
 
 class MailgunMailSender implements MailSender {
     async sendMail(mail: Mail): Promise<boolean> {
-        return await sendMailgun(mail.to, mail.subject, mail.body);
+        try {
+            await mg.send(mail.to, mail.subject, mail.body);
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 }
 
 class SendgridMailSender implements MailSender {
     async sendMail(mail: Mail): Promise<boolean> {
-        return await sendSendgrid(mail.to, mail.subject, mail.body);
+        try {
+            const msg = {
+                to: mail.to,
+                from: process.env['EMAIL_FROM'] as string,
+                subject: mail.subject,
+                text: mail.body,
+            };
+            const res = await sgMail.send(msg);
+            if (res[0].statusCode !== 202) return false;
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 }
 
