@@ -1,3 +1,6 @@
+import sendMailgun from "./utils/mailgun.utils";
+import sendSendgrid from "./utils/sendgrid.utils";
+
 interface User {
     id: number;
     role: string;
@@ -26,8 +29,6 @@ interface Mail {
     updatedAt: Date;
 }
 
-interface MailProvider {
 
-}
 
 export { User, UserStats, Mail }
