@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import { app, prisma, server } from '../index';
+import { app, prisma, server } from '../../index';
 
 const api = supertest(app);
 
@@ -35,21 +35,21 @@ test('Register (user duplicated): return 400', async () => {
     expect(res.body.error).toBeDefined();
 });
 
-test('Login (bad password): return 401', async () => {
+test('Login (bad password): return 400', async () => {
     const res = await api.post('/login').send({
         username: 'test',
         password: 'te',
     });
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(400);
     expect(res.body.error).toBeDefined();
 });
 
-test('Login (bad user): return 404', async () => {
+test('Login (bad user): return 400', async () => {
     const res = await api.post('/login').send({
         username: 'te',
         password: 'test',
     });
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
     expect(res.body.error).toBeDefined();
 });
 

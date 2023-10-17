@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import { app, server, prisma } from '../index';
+import { app, server, prisma } from '../../index';
 
 const api = supertest(app);
 

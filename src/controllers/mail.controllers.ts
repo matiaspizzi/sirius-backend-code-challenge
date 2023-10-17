@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post('/send', async (req, res) => {
     const {to, subject, body} = req.body;
+    if (!to || !subject || !body) return res.status(400).json({error: 'Faltan datos'});
     const user = res.locals['user'];
     const mail = {authorId: user.id, to, subject, body} as Mail;
     const mailService = new MailContext(new MailgunMailSender());
@@ -15,7 +16,7 @@ router.post('/send', async (req, res) => {
     if (resp) {
         newMail(user, to, subject, body);
         updateUserQuota(user.id, user.quota + 1);
-        return res.status(201).json(mail);
+        return res.status(201).json({...mail, id: user.id});
     }
     else {
         mailService.setSender(new SendgridMailSender());
@@ -23,7 +24,7 @@ router.post('/send', async (req, res) => {
         if (resp2) {
             newMail(user, to, subject, body);
             updateUserQuota(user.id, user.quota + 1);
-            return res.status(201).json(mail);
+            return res.status(201).json({...mail, id: user.id});
         }
         return res.status(400).json(resp);
     }

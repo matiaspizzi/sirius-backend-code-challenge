@@ -5,8 +5,6 @@ import { User } from '../types';
 
 class userService {
     async register(username: string, password: string, role: string): Promise<User | {error: string}> {
-        if (!username || !password || (role !== undefined && role !== 'admin'))
-            return { error: 'Comprobar campos' };
         try {
             const user = await getUserByUsername(username);
             if (user) return { error: 'El usuario ya está registrado' };
@@ -23,15 +21,13 @@ class userService {
     }
 
     async login(username: string, password: string): Promise<{error: string} | { token: string, user: User }> {
-        if (!username || !password)
-            return { error: 'Se requiere usuario y contraseña' };
         try {
             const user = await getUserByUsername(username);
-            if (!user) return { error: 'Usuario no encontrado' };
+            if (!user) return { error: 'Datos incorrectos' };
 
             const validPassword: boolean = await bcrypt.compare(password, user.password);
             if (!validPassword)
-                return { error: 'Contraseña incorrecta' };
+                return { error: 'Datos incorrectos' };
             const token = jwt.sign({ id: user.id }, process.env['JWT_SECRET'] as string, {
                 expiresIn: '1h',
             });
