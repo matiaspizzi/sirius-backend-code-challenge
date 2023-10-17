@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     const { username, password, role } = req.body;
     if (!username || !password || (role !== undefined && role !== 'admin')) return res.status(400).json({error: 'Faltan datos'});
-    const resp = await userService.register(username, password, role);
+    const resp = await userService.register(username, password, role ? role : 'user');
     if (typeof resp === 'object' && 'error' in resp) return res.status(400).json(resp);
     return res.status(201).json(resp);
 });
