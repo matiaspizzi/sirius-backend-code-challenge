@@ -72,6 +72,7 @@ class HandleMailRequest {
     }
 
     async handle(user: User, mail: Mail): Promise<boolean> {
+        if(user.quota >= 100) return false;
         let mailSent = await this.mailContext.sendMail(mail);
         if (!mailSent) this.mailContext.setSender(new SendgridMailSender());
         mailSent = await this.mailContext.sendMail(mail);
