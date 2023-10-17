@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
 import { NodeMailgun } from 'ts-mailgun';
-import { Mail } from '../types';
+import { Mail, User } from '../types';
 import sgMail from '@sendgrid/mail';
+import { updateUserQuota } from '../repositories/user.repositories';
+import { newMail } from '../repositories/mail.repositories';
 
 dotenv.config();
 sgMail.setApiKey(process.env['SENDGRID_API_KEY'] as string);
@@ -62,5 +64,23 @@ class MailContext {
     }
 }
 
+class HandleMailRequest {
+    private mailContext: MailContext;
 
-export { MailgunMailSender, SendgridMailSender, MailContext };
+    constructor(mailContext: MailContext) {
+        this.mailContext = mailContext;
+    }
+
+    async handle(user: User, mail: Mail): Promise<boolean> {
+        let mailSent = await this.mailContext.sendMail(mail);
+        if (!mailSent) this.mailContext.setSender(new SendgridMailSender());
+        mailSent = await this.mailContext.sendMail(mail);
+        if (!mailSent) return false;
+        await updateUserQuota(user.id, user.quota + 1);
+        await newMail(user, mail.to, mail.subject, mail.body);
+        return true;
+    }
+}
+
+
+export { MailgunMailSender, SendgridMailSender, MailContext, HandleMailRequest };
