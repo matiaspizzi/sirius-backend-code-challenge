@@ -1,4 +1,4 @@
-type User = {
+interface User {
     id: number;
     role: string;
     username: string;
@@ -9,14 +9,14 @@ type User = {
     lastQuotaCheck: string | null;
 }
 
-type UserStats = {
+interface UserStats {
     id: number;
     username: string;
     quota: number;
     lastQuotaCheck: string | null;
 }
 
-type Mail = {
+interface Mail {
     id: number;
     authorId: number;
     to: string;

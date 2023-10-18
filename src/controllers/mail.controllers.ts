@@ -10,8 +10,8 @@ router.post('/send', async (req, res) => {
     if (!to || !subject || !body) return res.status(400).json({error: 'Error de campos'});
     const mailService = new HandleMailRequest(new MailContext(new MailgunMailSender()));
     const resolve = await mailService.handle(user, {authorId: user.id, to, subject, body} as Mail)
-    if (resolve) return res.status(200).json({message: 'Correo enviado'});
-    return res.status(400).json({error: 'No se pudo enviar el correo'});
+    if ('error' in resolve) return res.status(400).json(resolve);
+    return res.status(200).json(resolve);
 });
 
 export default router; 

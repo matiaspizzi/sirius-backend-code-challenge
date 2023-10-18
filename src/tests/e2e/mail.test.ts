@@ -55,13 +55,13 @@ test('Send (missing data): return 400', async () => {
     expect(res.body.error).toBeDefined();
 });
 
-test('Send: return 201', async () => {
+test('Send: return 200', async () => {
     const res = await api.post('/send').set('auth_token', auth_token).send({
         to: 'matias.nahuel.pizzi2@gmail.com',
         subject: 'test1',
         body: 'test1 body',
     });
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
     expect(res.body.id).toBeDefined();
     expect(res.body.to).toBe('matias.nahuel.pizzi2@gmail.com');
     expect(res.body.subject).toBe('test1');

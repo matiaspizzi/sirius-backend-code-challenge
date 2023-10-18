@@ -71,15 +71,16 @@ class HandleMailRequest {
         this.mailContext = mailContext;
     }
 
-    async handle(user: User, mail: Mail): Promise<boolean> {
-        if(user.quota >= 100) return false;
+    async handle(user: User, mail: Mail): Promise<Mail | {error: string}> {
+        if(user.quota >= 100) return {error: 'Quota excedida'};
         let mailSent = await this.mailContext.sendMail(mail);
         if (!mailSent) this.mailContext.setSender(new SendgridMailSender());
         mailSent = await this.mailContext.sendMail(mail);
-        if (!mailSent) return false;
+        if (!mailSent) return {error: 'Error de servidor'};
         await updateUserQuota(user.id, user.quota + 1);
-        await newMail(user, mail.to, mail.subject, mail.body);
-        return true;
+        const res = await newMail(user, mail.to, mail.subject, mail.body);
+        if (res) return res;
+        return {error: 'Error de servidor'};
     }
 }
 

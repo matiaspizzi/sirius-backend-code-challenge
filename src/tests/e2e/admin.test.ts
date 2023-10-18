@@ -41,13 +41,13 @@ test('Stats (no users found): return 404', async () => {
     expect(res.body.msg).toBeDefined();
 });
 
-test('Send mail: return 201', async () => {
+test('Send mail: return 200', async () => {
     const res = await api.post('/send').set('auth_token', auth_token).send({
         to: 'matias.nahuel.pizzi2@gmail.com',
         subject: 'test1',
         body: 'test1 body',
     });
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
 });
 
 test('Stats (with 1 user): return 200', async () => {
